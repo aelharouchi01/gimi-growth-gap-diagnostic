@@ -2,6 +2,9 @@
 <html lang="en">
 <head>
 <meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<meta name="description" content="A short, self-scoring diagnostic that shows where the gap between your growth ambition and your current effort is concentrated.">
+<link rel="icon" href="data:image/svg+xml,%3Csvg%20xmlns%3D%27http%3A//www.w3.org/2000/svg%27%20viewBox%3D%270%200%2032%2032%27%3E%3Ccircle%20cx%3D%2716%27%20cy%3D%2716%27%20r%3D%2711%27%20fill%3D%27none%27%20stroke%3D%27%2300858E%27%20stroke-width%3D%277%27%20stroke-linecap%3D%27round%27%20stroke-dasharray%3D%2752%2018%27%20transform%3D%27rotate%28-40%2016%2016%29%27/%3E%3C/svg%3E">
 <title>GIMI Growth Gap Diagnostic</title>
 <style>
   :root{
@@ -199,6 +202,20 @@
     text-transform:uppercase;
     letter-spacing:.4px;
   }
+  .validation{
+    display:none;
+    background:#f6eaf1;
+    border-left:4px solid var(--magenta);
+    color:var(--navy);
+    font-size:13px;
+    padding:10px 14px;
+    margin-top:6px;
+    border-radius:3px;
+  }
+  select.missing{
+    border-color:var(--magenta);
+    box-shadow:0 0 0 2px rgba(164,60,124,.16);
+  }
   button#runBtn{
     display:block;
     width:100%;
@@ -308,15 +325,15 @@
   <div class="divider"></div>
   <div class="titles">
     <div class="wordmark">Growth Gap Diagnostic</div>
-    <div class="sub">A quick read on where your growth is actually coming from</div>
+    <div class="sub">Where your growth ambition and your current effort diverge</div>
   </div>
 </header>
 
 <div class="wrap">
 
   <div class="intro">
-    <h1>Where is your growth actually going to come from?</h1>
-    <p>Ten quick questions. No essays, no typing beyond your company name. Answer where you want to be and where you are today, and you'll see exactly where the gap is concentrated, and roughly what it's worth.</p>
+    <h1>Where will your next phase of growth come from?</h1>
+    <p>Six paired questions, answered entirely from dropdowns, in about five minutes. For each one you set out where you want to be and where you are today. The result shows where the distance between the two is concentrated, and what it is worth in revenue.</p>
   </div>
 
   <div class="card">
@@ -390,7 +407,7 @@
           <select id="p1_prac" class="pct"></select>
         </div>
       </div>
-      <div class="why" style="--accent:#00858E; --tintbg:#e4f2f3;"><span class="whytag">Why</span>This is what GIMI calls your Growth Gap, the distance between where your targets say you need to be and where your current effort is actually pointed. Naming it in numbers is the first step of a structured innovation process, before any idea gets explored.</div>
+      <div class="why" style="--accent:#00858E; --tintbg:#e4f2f3;"><span class="whytag">Why</span>This is what GIMI calls your Growth Gap, the distance between where your targets say you need to be and where your current effort is pointed. Naming it in numbers is the first step of a structured innovation process, before any idea gets explored.</div>
     </div>
   </div>
 
@@ -409,7 +426,7 @@
         </div>
         <div class="half">
           <div class="eyebrow">Where you are today</div>
-          <label class="qtext" for="p2_prac">How many are you actually tracking today, in a structured, revisited way?</label>
+          <label class="qtext" for="p2_prac">How many are you tracking today, in a structured and regularly revisited way?</label>
           <select id="p2_prac" class="cnt"></select>
         </div>
       </div>
@@ -432,7 +449,7 @@
         </div>
         <div class="half">
           <div class="eyebrow">Where you are today</div>
-          <label class="qtext" for="p3_prac">How many has your leadership team formally agreed on, in writing, today?</label>
+          <label class="qtext" for="p3_prac">How many has your leadership team formally agreed on, in writing?</label>
           <select id="p3_prac" class="cnt"></select>
         </div>
       </div>
@@ -450,12 +467,12 @@
       <div class="pair">
         <div class="half">
           <div class="eyebrow">Where you want to be</div>
-          <label class="qtext" for="p4_amb">How many genuinely new business concepts (not incremental tweaks) should be in active development at any time to hit your growth targets?</label>
+          <label class="qtext" for="p4_amb">How many genuinely new business concepts, as opposed to incremental improvements, should be in active development at any time to meet your growth targets?</label>
           <select id="p4_amb" class="cnt"></select>
         </div>
         <div class="half">
           <div class="eyebrow">Where you are today</div>
-          <label class="qtext" for="p4_prac">How many are actually in active development right now?</label>
+          <label class="qtext" for="p4_prac">How many are in active development right now?</label>
           <select id="p4_prac" class="cnt"></select>
         </div>
       </div>
@@ -478,7 +495,7 @@
         </div>
         <div class="half">
           <div class="eyebrow">Where you are today</div>
-          <label class="qtext" for="p5_prac">What share actually did, over the last 12 months?</label>
+          <label class="qtext" for="p5_prac">What share reached that point over the last 12 months?</label>
           <select id="p5_prac" class="pct"></select>
         </div>
       </div>
@@ -501,7 +518,7 @@
         </div>
         <div class="half">
           <div class="eyebrow">Where you are today</div>
-          <label class="qtext" for="p6_prac">How many currently have that structured capability today?</label>
+          <label class="qtext" for="p6_prac">How many have that structured capability today?</label>
           <select id="p6_prac" class="cnt"></select>
         </div>
       </div>
@@ -509,6 +526,7 @@
     </div>
   </div>
 
+  <div class="validation" id="validationNotice" role="alert"></div>
   <button id="runBtn" onclick="runDiagnostic()">See where your gap is</button>
 
   <div id="results">
@@ -519,23 +537,23 @@
       <div class="hero h1">
         <div class="label">Growth gap, next 5 years</div>
         <div class="num" id="growthGapNum">$0M</div>
-        <div class="desc">Revenue you say you want, with no structured effort currently pointed at capturing it.</div>
+        <div class="desc" id="growthGapDesc">Revenue your own targets call for, with no structured effort currently pointed at capturing it.</div>
       </div>
       <div class="hero h2">
         <div class="label">Capability gap</div>
         <div class="num" id="capGapNum">0 people</div>
-        <div class="desc">People who would need stronger, structured innovation capability to close the gap above.</div>
+        <div class="desc" id="capGapDesc">The number of people who would need stronger, structured innovation capability to close the gap above.</div>
       </div>
     </div>
 
     <div class="exposure-list" id="exposureList"></div>
 
     <div class="stakes">
-      Organizations that close gaps like these consistently see it show up as pricing power, easier access to capital, stronger partner relationships, and a better ability to attract talent. That's the compounding advantage of being an innovation leader rather than a fast follower.
+      Organizations that close gaps like these tend to see the benefit appear as pricing power, easier access to capital, stronger partner relationships, and a greater ability to attract talent. GIMI calls this the Innovation Premium, the compounding advantage of leading on innovation rather than following.
     </div>
 
     <div class="cta">
-      This pattern is exactly what GIMI's five-step Innovation Breakthrough Process is built to close. Talk to the partner who shared this with you about where to start.
+      This is the pattern GIMI's five-step Innovation Breakthrough Process is built to close. Speak to the partner who shared this diagnostic with you about where to start.
     </div>
 
   </div>
@@ -585,10 +603,10 @@
   }
 
   const EXPOSURE_COPY = {
-    p2: "You're watching far fewer outside trends and markets than you believe you need to. That leaves you exposed to shifts you won't see coming until a competitor already has.",
-    p3: "Your leadership team hasn't agreed, in writing, on where you will and won't pursue growth beyond your core business. Everyone has a personal view, but there's no shared boundary.",
-    p4: "You don't have enough genuinely new business concepts in active development to hit your own stated targets. The pipeline is thinner than the ambition.",
-    p5: "Good ideas are stalling before they get funded. You're converting far fewer into resourced initiatives than you say you should."
+    p2: "You are tracking far fewer outside markets and trends than your own answer says you need. That leaves you exposed to shifts you will not see until a competitor has already moved on them.",
+    p3: "Your leadership team has not formally agreed on where you will and will not pursue growth beyond your core business. Individual views exist, but there is no shared boundary set down in writing.",
+    p4: "There are fewer genuinely new business concepts in active development than your own growth targets require. The pipeline is thinner than the ambition.",
+    p5: "Ideas are stalling before they reach funding. You are converting far fewer of them into resourced initiatives than your own answer says you should."
   };
   const EXPOSURE_COLOR = { p2:"#A43C7C", p3:"#C96A82", p4:"#DE8E3D", p5:"#EFCE46" };
   const STEP_ORDER = ["p2","p3","p4","p5"]; // used for tie-breaks: earlier = more foundational
@@ -602,10 +620,20 @@
     const p1a = val('p1_amb'), p1p = val('p1_prac');
     const p6a = val('p6_amb'), p6p = val('p6_prac');
 
-    if (revenue === null || p1a === null || p1p === null || p6a === null || p6p === null) {
-      alert("Please complete at least the revenue field, question 1, and question 6 before continuing.");
+    const required = ['revenue','p1_amb','p1_prac','p6_amb','p6_prac'];
+    required.forEach(id => document.getElementById(id).classList.remove('missing'));
+    const notice = document.getElementById('validationNotice');
+    const missing = required.filter(id => val(id) === null);
+    if (missing.length) {
+      missing.forEach(id => document.getElementById(id).classList.add('missing'));
+      notice.textContent = 'Please complete the highlighted answers to see your results.';
+      notice.style.display = 'block';
+      const first = document.getElementById(missing[0]);
+      first.scrollIntoView({behavior:'smooth', block:'center'});
+      first.focus({preventScroll:true});
       return;
     }
+    notice.style.display = 'none';
 
     // Hero 1: growth gap $
     let growthGapPct = p1a - p1p;
@@ -626,7 +654,7 @@
 
     // Rank descending, tie-break by earlier step
     const ranked = STEP_ORDER
-      .filter(k => gaps[k] !== null)
+      .filter(k => gaps[k] !== null && gaps[k] > 0)
       .sort((a,b) => {
         if (gaps[b] !== gaps[a]) return gaps[b] - gaps[a];
         return STEP_ORDER.indexOf(a) - STEP_ORDER.indexOf(b);
@@ -639,9 +667,23 @@
     document.getElementById('growthGapNum').textContent = `$${growthGapM}M`;
     document.getElementById('capGapNum').textContent = `${capGap} ${capGap === 1 ? 'person' : 'people'}`;
 
+    document.getElementById('growthGapDesc').textContent = growthGapM > 0
+      ? 'Revenue your own targets call for, with no structured effort currently pointed at capturing it.'
+      : 'On this measure your stated ambition and your current effort are already aligned.';
+    document.getElementById('capGapDesc').textContent = capGap > 0
+      ? 'The number of people who would need stronger, structured innovation capability to close the gap above.'
+      : 'On this measure the capability already in place matches what your targets call for.';
+
     const list = document.getElementById('exposureList');
     list.innerHTML = "";
-    const tags = ["Biggest exposure", "Second"];
+    const tags = ["Biggest exposure", "Second exposure"];
+    if (!ranked.length) {
+      const div = document.createElement('div');
+      div.className = 'item';
+      div.style.setProperty('--item-accent', '#00858E');
+      div.innerHTML = '<span class="tag">No material gap</span>Across scanning, focus, pipeline and execution, your answers show no meaningful distance between where you want to be and where you are today.';
+      list.appendChild(div);
+    }
     ranked.slice(0,2).forEach((key, i) => {
       const div = document.createElement('div');
       div.className = 'item';
@@ -653,6 +695,15 @@
     document.getElementById('results').style.display = 'block';
     document.getElementById('results').scrollIntoView({behavior:'smooth'});
   }
+
+  document.addEventListener('change', function(e){
+    if (e.target && e.target.tagName === 'SELECT') {
+      e.target.classList.remove('missing');
+      if (!document.querySelector('select.missing')) {
+        document.getElementById('validationNotice').style.display = 'none';
+      }
+    }
+  });
 </script>
 
 </body>
