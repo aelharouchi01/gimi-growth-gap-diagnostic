@@ -126,3 +126,83 @@ function logFailure_(err) {
     // Never let logging break the response.
   }
 }
+
+/* ---------------------------------------------------------------------------
+ * Partner views.
+ *
+ * A partner must never be given access to this spreadsheet. It holds every
+ * other partner's clients. Google cannot restrict a collaborator to a subset
+ * of rows, so the only safe way to show a partner their own results is a
+ * separate spreadsheet that pulls just their rows across.
+ *
+ * Run this from the GIMI menu that appears in the sheet's toolbar. It builds
+ * that separate spreadsheet for you and hands back the URL. Share that, and
+ * only that, with the partner.
+ * ------------------------------------------------------------------------ */
+
+function onOpen() {
+  SpreadsheetApp.getUi()
+    .createMenu('GIMI')
+    .addItem('Create a partner view...', 'createPartnerView')
+    .addItem('List partner codes seen so far', 'listPartnerCodes')
+    .addToUi();
+}
+
+function createPartnerView() {
+  var ui = SpreadsheetApp.getUi();
+  var response = ui.prompt(
+    'Create a partner view',
+    'Partner code, exactly as it appears in their link after ?p=',
+    ui.ButtonSet.OK_CANCEL
+  );
+
+  if (response.getSelectedButton() !== ui.Button.OK) return;
+
+  var code = String(response.getResponseText()).trim();
+  if (!code || !/^[A-Za-z0-9_-]+$/.test(code)) {
+    ui.alert('That is not a usable code. Use letters, numbers, hyphen and underscore only.');
+    return;
+  }
+
+  var source = SpreadsheetApp.getActiveSpreadsheet();
+  var view = SpreadsheetApp.create('GIMI Growth Gap Diagnostic, ' + code);
+  var sheet = view.getActiveSheet();
+  sheet.setName('Their submissions');
+
+  sheet.getRange('A1').setFormula(
+    '=QUERY(IMPORTRANGE("' + source.getUrl() + '", "' + SHEET_NAME + '!A:V"), ' +
+    '"select * where Col2 = \'' + code + '\'", 1)'
+  );
+
+  sheet.setFrozenRows(1);
+
+  ui.alert(
+    'Partner view created',
+    'Open it once and approve the IMPORTRANGE prompt, otherwise it will sit on #REF!.\n\n' +
+    'Then share this file, and nothing else, with ' + code + ':\n\n' + view.getUrl(),
+    ui.ButtonSet.OK
+  );
+}
+
+function listPartnerCodes() {
+  var sheet = getSheet_();
+  var ui = SpreadsheetApp.getUi();
+  var last = sheet.getLastRow();
+
+  if (last < 2) {
+    ui.alert('No submissions yet.');
+    return;
+  }
+
+  var codes = {};
+  sheet.getRange(2, 2, last - 1, 1).getValues().forEach(function (row) {
+    var code = String(row[0]).trim();
+    if (code) codes[code] = (codes[code] || 0) + 1;
+  });
+
+  var lines = Object.keys(codes).sort().map(function (code) {
+    return code + ': ' + codes[code];
+  });
+
+  ui.alert('Partner codes and submission counts', lines.join('\n'), ui.ButtonSet.OK);
+}

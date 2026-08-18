@@ -151,6 +151,7 @@
     line-height:1.45;
     font-weight:600;
     margin-bottom:10px;
+    min-height:2.9em;
   }
   select, input[type=text]{
     width:100%;
@@ -175,6 +176,17 @@
     flex-direction:column;
   }
   .pair .half select{ margin-top:auto; }
+  /* Above 880px the two columns are locked at 369px each, which is the width
+     the paired questions were balanced against. Below it the columns would
+     shrink and the two questions in a pair could wrap to different line
+     counts, so they stack instead and the question stands on its own row. */
+  @media (max-width: 879px){
+    .pair{ display:block; }
+    .pair .half{ margin-bottom:14px; }
+    .pair .half:last-child{ margin-bottom:0; }
+    .pair .half select{ margin-top:0; }
+    label.qtext{ min-height:0; }
+  }
   .setup-grid{
     display:flex;
     gap:16px;
@@ -426,7 +438,7 @@
         </div>
         <div class="half">
           <div class="eyebrow">Where you are today</div>
-          <label class="qtext" for="p2_prac">How many are you tracking today, in a structured and regularly revisited way?</label>
+          <label class="qtext" for="p2_prac">How many of those markets, segments, or trends are you tracking today, in a structured way that you revisit on a regular basis rather than ad hoc?</label>
           <select id="p2_prac" class="cnt"></select>
         </div>
       </div>
@@ -449,7 +461,7 @@
         </div>
         <div class="half">
           <div class="eyebrow">Where you are today</div>
-          <label class="qtext" for="p3_prac">How many has your leadership team formally agreed on, in writing?</label>
+          <label class="qtext" for="p3_prac">How many of those spaces has your leadership team formally agreed on and set down in writing?</label>
           <select id="p3_prac" class="cnt"></select>
         </div>
       </div>
@@ -467,12 +479,12 @@
       <div class="pair">
         <div class="half">
           <div class="eyebrow">Where you want to be</div>
-          <label class="qtext" for="p4_amb">How many genuinely new business concepts, as opposed to incremental improvements, should be in active development at any time to meet your growth targets?</label>
+          <label class="qtext" for="p4_amb">How many genuinely new business concepts, as opposed to incremental improvements, should be in active development at any one time?</label>
           <select id="p4_amb" class="cnt"></select>
         </div>
         <div class="half">
           <div class="eyebrow">Where you are today</div>
-          <label class="qtext" for="p4_prac">How many are in active development right now?</label>
+          <label class="qtext" for="p4_prac">How many genuinely new business concepts, on that same definition, are in active development across your organization right now?</label>
           <select id="p4_prac" class="cnt"></select>
         </div>
       </div>
@@ -495,7 +507,7 @@
         </div>
         <div class="half">
           <div class="eyebrow">Where you are today</div>
-          <label class="qtext" for="p5_prac">What share reached that point over the last 12 months?</label>
+          <label class="qtext" for="p5_prac">Of the new ideas your organization generated over the last 12 months, what share reached that point?</label>
           <select id="p5_prac" class="pct"></select>
         </div>
       </div>
@@ -518,7 +530,7 @@
         </div>
         <div class="half">
           <div class="eyebrow">Where you are today</div>
-          <label class="qtext" for="p6_prac">How many have that structured capability today?</label>
+          <label class="qtext" for="p6_prac">How many of your people have that structured innovation capability in place today?</label>
           <select id="p6_prac" class="cnt"></select>
         </div>
       </div>
@@ -566,20 +578,19 @@
   /* ------------------------------------------------------------------
      Where completed diagnostics are sent.
 
-     Empty string means nothing is sent anywhere and nothing is stored, and
-     the footnote at the bottom of the report says exactly that. Paste the
-     Apps Script web app URL between the quotes to switch collection on, and
-     the footnote automatically changes to disclose it. See SETUP.md.
+     Empty string means nothing is sent anywhere. Paste the Apps Script web app
+     URL between the quotes to switch collection on. See SETUP.md.
+
+     The diagnostic asks for no name and no email address, so what is collected
+     is a company and its answers, never an identified individual.
      ------------------------------------------------------------------ */
   const SUBMIT_ENDPOINT = "";
 
-  const FOOTNOTE_PRIVATE =
-    "Every figure above is calculated in your browser from the answers you selected, using a fixed set of formulas. No AI model is used to generate any part of this report. Your answers are not sent anywhere and nothing is stored once you close this page.";
-  const FOOTNOTE_SHARED =
-    "Every figure above is calculated in your browser from the answers you selected, using a fixed set of formulas. No AI model is used to generate any part of this report. A copy of your answers and the figures above is shared with the partner who sent you this diagnostic, and with the Global Innovation Management Institute, so that they can follow up with you. You are not asked for your name or your email address.";
-
+  /* One statement, true whether or not collection is switched on. It makes no
+     claim about where answers do or do not go, because the diagnostic is
+     anonymous: no name and no email address is ever asked for. */
   document.getElementById('footnote').textContent =
-    SUBMIT_ENDPOINT ? FOOTNOTE_SHARED : FOOTNOTE_PRIVATE;
+    "Every figure above is calculated in your browser from the answers you selected, using a fixed set of formulas. No AI model is used to generate any part of this report, and you are not asked for your name or your email address.";
 
   /* Which partner sent this link. Rides along in the URL as ?p=code so the
      respondent has nothing extra to fill in and nothing to get wrong. */

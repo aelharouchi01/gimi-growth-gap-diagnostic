@@ -25,17 +25,19 @@ To run it locally, open `index.html` in any browser.
 
 ## Seeing the responses
 
-Collection is off in the shipped file, and while it is off the tool sends nothing anywhere
-and the footnote tells the respondent exactly that.
+Collection is off in the shipped file, and while it is off the tool sends nothing anywhere.
 
-Switch it on and each completed diagnostic appends a row to a Google Sheet that GIMI owns,
-which is the admin view. Partners are identified by their own link, `?p=their-code`, and are
-given a filtered copy of the sheet rather than access to the original. The footnote flips to
-disclose the sharing automatically, so what the respondent is told always matches what the
-tool actually does.
+Switch it on and each completed diagnostic appends a row to a Google Sheet that GIMI owns.
+That sheet is the admin view and the only place the full picture exists. Partners come in on
+their own link, `?p=their-code`.
 
-Full instructions, including the per-partner access pattern, are in
-[SETUP.md](SETUP.md).
+**A partner only ever sees submissions from their own link.** The collection sheet is never
+shared with them. The Apps Script has a GIMI menu that builds each partner a separate
+spreadsheet filtered to their code, which is the thing you share.
+
+The diagnostic is anonymous. It asks for no name and no email address.
+
+Full instructions are in [SETUP.md](SETUP.md).
 
 ## Files
 

@@ -25,9 +25,15 @@ file, no build step, no server, no dependencies. Open it in any browser and it r
   single permitted request is a fire and forget POST of the finished submission to a Google
   Apps Script endpoint. It must never block or alter the report, nothing may be fetched back,
   and no third-party script may be added. See `SETUP.md`.
-- **The footnote must always match the actual behaviour.** It is set at runtime from whether
-  `SUBMIT_ENDPOINT` is filled in, so that the tool can never promise a respondent that nothing
-  is sent while it is sending. Do not turn it back into static text.
+- **The footnote makes no claim about where answers go, in either direction.** Ahmed removed
+  the sending and storage statement on 2026-08-18 on the grounds that the diagnostic is
+  anonymous: no name and no email address is ever collected. What is left is the no-AI
+  statement and the anonymity statement, both of which are true whether or not collection is
+  switched on. Do not reintroduce a promise that nothing is sent.
+- **A partner may only ever see submissions from their own `?p=` link.** The collection sheet
+  is GIMI's alone. It holds every partner's clients, and Google cannot restrict a
+  collaborator to a subset of rows, so it is never shared. The Apps Script builds each
+  partner a separate filtered spreadsheet instead.
 - **No free-text input** except the company name field. Every other input is a dropdown/select
   with fixed options, specifically so nothing can be mistyped.
 - **No em dashes anywhere in any copy.**
@@ -79,6 +85,12 @@ Each pair asks an **ambition** question ("where you want to be") and a **practic
 ("where you are today"), on the same scale, so the respondent computes their own gap rather than
 being told a score. This is the core psychological mechanism, do not collapse pairs into a single
 question.
+
+The two questions in a pair sit side by side in equal columns, and **their wording is length
+matched so both wrap to the same number of lines** at the 369px column width the page settles
+at above 880px. Below 880px the pair stacks, so the question always has a row to itself.
+If you reword a question, re-check its partner. A two line question next to a one line
+question is the thing this layout exists to avoid.
 
 1. **Growth ambition** (maps to GIMI's Innovation Intent / Growth Gap step). Ambition: "Over the
    next 5 years, what share of revenue do you want coming from offerings that don't exist in your
@@ -154,10 +166,11 @@ verified against WCAG contrast ratios, no em dashes, JS syntax-checked with `nod
 - Industry is captured but not yet used to vary question wording or scoring. Could branch copy by
   industry later.
 - ~~No persistence layer.~~ Done on 2026-08-18. Completed diagnostics post to a Google Sheet
-  via Apps Script, attributed to a partner through a `?p=code` link. GIMI reads the sheet, each
-  partner gets a filtered copy. See `SETUP.md`. Real peer benchmarking, meaning replacing the
-  static Innovation Premium stakes line with figures drawn from actual responses, is still not
-  built and needs enough submissions to be meaningful first.
+  via Apps Script, attributed to a partner through a `?p=code` link. GIMI reads the sheet,
+  each partner gets a separate spreadsheet filtered to their own code and never the sheet
+  itself. See `SETUP.md`. Real peer benchmarking, meaning replacing the static Innovation
+  Premium stakes line with figures drawn from actual responses, is still not built and needs
+  enough submissions to be meaningful first.
 - No PDF/export option yet, results only render on-screen.
 - No multi-respondent alignment comparison yet (sending to 2-3 execs at the same client and diffing
   their answers on the Fields-of-Play pair), which was discussed as a strong future feature for CTP

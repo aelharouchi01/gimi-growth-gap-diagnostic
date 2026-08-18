@@ -1,12 +1,11 @@
 # Turning on submission collection
 
 By default this diagnostic sends nothing anywhere. `SUBMIT_ENDPOINT` in `index.html` is an
-empty string, and the footnote the respondent sees says their answers are not sent anywhere
-and nothing is stored. That is the shipped state and it is accurate.
+empty string. Follow the steps below to collect completed diagnostics in a Google Sheet that
+GIMI owns.
 
-Follow the steps below to collect completed diagnostics in a Google Sheet that GIMI owns.
-The footnote changes by itself the moment the endpoint is filled in, so the disclosure and
-the behaviour can never drift apart.
+The diagnostic is anonymous. It never asks for a name or an email address, so what lands in
+the sheet is a company and its answers, not an identified person.
 
 ## 1. Create the sheet
 
@@ -65,19 +64,26 @@ underscore is stripped out before it is sent.
 
 ## 6. Who sees what
 
-**GIMI** opens the sheet directly. That is the admin view, and it holds every submission
-from every partner.
+**GIMI** opens the collection sheet directly. That is the admin view, and it is the only
+place the full picture exists.
 
-**A partner** should never be given access to the collection sheet itself, because Google
-cannot restrict a collaborator to a subset of rows. Give each partner their own separate
-sheet that pulls only their rows:
+**A partner sees only the submissions that came through their own link. Never the
+collection sheet.** That sheet holds every other partner's clients, and Google cannot
+restrict a collaborator to a subset of rows, so there is no safe way to share it. Sharing it
+once, even read only, exposes every partner's pipeline to a competitor.
 
-```
-=QUERY(IMPORTRANGE("<collection sheet URL>", "Submissions!A:V"), "select * where Col2 = 'acme-consulting'", 1)
-```
+The script builds the safe version for you. In the collection sheet, use the **GIMI** menu
+in the toolbar:
 
-Share that sheet with the partner and nothing else. You will be asked to approve the
-`IMPORTRANGE` connection once, the first time.
+- **Create a partner view...** asks for the partner's code and creates a separate
+  spreadsheet containing only their rows, then gives you its URL. Open it once and approve
+  the `IMPORTRANGE` prompt, otherwise it sits on `#REF!`. Then share that file, and nothing
+  else, with the partner.
+- **List partner codes seen so far** shows which codes have come in and how many
+  submissions each has, which is the quickest way to check a partner's link is working.
+
+The view stays live. New submissions on that partner's link appear in their sheet on their
+own, and they still cannot see anything outside their own code.
 
 ## Changing the script later
 
@@ -100,7 +106,9 @@ a secret hidden in client-side JavaScript, because there is no such thing.
 Once collection is live, the tool is handling client executives' answers about their own
 business. Two things worth settling first:
 
-- The footnote discloses the sharing, but check whether GIMI wants anything stronger in
-  front of respondents in regulated markets, or a note in the partner agreement.
+- The footnote says no name and no email address is asked for, which is true, and it makes
+  no claim either way about where the answers go. That is a deliberate choice. Worth checking
+  it is the right one for regulated markets, or whether the partner agreement should carry a
+  line about it instead.
 - The sheet accumulates named companies over time. Decide who at GIMI owns it, and whether
   there is a retention limit.
