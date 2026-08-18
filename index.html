@@ -132,11 +132,22 @@
     line-height:1.45;
     font-weight:600;
   }
-  label.sub{
+  .card .eyebrow{
     display:block;
-    font-size:12px;
+    font-size:10.5px;
+    font-weight:700;
+    letter-spacing:.08em;
+    text-transform:uppercase;
     color:var(--grey-600);
-    margin-bottom:4px;
+    margin-bottom:6px;
+  }
+  label.qtext{
+    display:block;
+    font-size:13.5px;
+    color:#222;
+    line-height:1.45;
+    font-weight:600;
+    margin-bottom:10px;
   }
   select, input[type=text]{
     width:100%;
@@ -154,7 +165,13 @@
     margin-top:2px;
     flex-wrap:wrap;
   }
-  .pair .half{ flex:1; min-width:220px; }
+  .pair .half{
+    flex:1;
+    min-width:220px;
+    display:flex;
+    flex-direction:column;
+  }
+  .pair .half select{ margin-top:auto; }
   .setup-grid{
     display:flex;
     gap:16px;
@@ -361,14 +378,15 @@
       <div class="titletext">Growth ambition</div>
     </div>
     <div class="body">
-      <label class="q">Over the next 5 years, what share of revenue do you want coming from offerings that don't exist in your portfolio today?</label>
       <div class="pair">
         <div class="half">
-          <label class="sub">Where you want to be</label>
+          <div class="eyebrow">Where you want to be</div>
+          <label class="qtext" for="p1_amb">Over the next 5 years, what share of revenue do you want coming from offerings that don't exist in your portfolio today?</label>
           <select id="p1_amb" class="pct"></select>
         </div>
         <div class="half">
-          <label class="sub">What share of your budget or leadership time is explicitly dedicated to finding that new revenue today?</label>
+          <div class="eyebrow">Where you are today</div>
+          <label class="qtext" for="p1_prac">What share of your budget or leadership time is explicitly dedicated to finding that new revenue today?</label>
           <select id="p1_prac" class="pct"></select>
         </div>
       </div>
@@ -383,14 +401,15 @@
       <div class="titletext">Scanning the landscape</div>
     </div>
     <div class="body">
-      <label class="q">How many markets, segments, or trends outside your core business should you be systematically watching for growth opportunities?</label>
       <div class="pair">
         <div class="half">
-          <label class="sub">Where you want to be</label>
+          <div class="eyebrow">Where you want to be</div>
+          <label class="qtext" for="p2_amb">How many markets, segments, or trends outside your core business should you be systematically watching for growth opportunities?</label>
           <select id="p2_amb" class="cnt"></select>
         </div>
         <div class="half">
-          <label class="sub">How many are you actually tracking today, in a structured, revisited way?</label>
+          <div class="eyebrow">Where you are today</div>
+          <label class="qtext" for="p2_prac">How many are you actually tracking today, in a structured, revisited way?</label>
           <select id="p2_prac" class="cnt"></select>
         </div>
       </div>
@@ -405,14 +424,15 @@
       <div class="titletext">Strategic focus</div>
     </div>
     <div class="body">
-      <label class="q">How many new spaces beyond your core business should you have clearly identified and prioritized for growth?</label>
       <div class="pair">
         <div class="half">
-          <label class="sub">Where you want to be</label>
+          <div class="eyebrow">Where you want to be</div>
+          <label class="qtext" for="p3_amb">How many new spaces beyond your core business should you have clearly identified and prioritized for growth?</label>
           <select id="p3_amb" class="cnt"></select>
         </div>
         <div class="half">
-          <label class="sub">How many has your leadership team formally agreed on, in writing, today?</label>
+          <div class="eyebrow">Where you are today</div>
+          <label class="qtext" for="p3_prac">How many has your leadership team formally agreed on, in writing, today?</label>
           <select id="p3_prac" class="cnt"></select>
         </div>
       </div>
@@ -427,14 +447,15 @@
       <div class="titletext">Pipeline</div>
     </div>
     <div class="body">
-      <label class="q">How many genuinely new business concepts (not incremental tweaks) should be in active development at any time to hit your growth targets?</label>
       <div class="pair">
         <div class="half">
-          <label class="sub">Where you want to be</label>
+          <div class="eyebrow">Where you want to be</div>
+          <label class="qtext" for="p4_amb">How many genuinely new business concepts (not incremental tweaks) should be in active development at any time to hit your growth targets?</label>
           <select id="p4_amb" class="cnt"></select>
         </div>
         <div class="half">
-          <label class="sub">How many are actually in active development right now?</label>
+          <div class="eyebrow">Where you are today</div>
+          <label class="qtext" for="p4_prac">How many are actually in active development right now?</label>
           <select id="p4_prac" class="cnt"></select>
         </div>
       </div>
@@ -449,14 +470,15 @@
       <div class="titletext">Execution</div>
     </div>
     <div class="body">
-      <label class="q">Of the new ideas your organization generates, what share should reach a funded, resourced initiative within 12 months?</label>
       <div class="pair">
         <div class="half">
-          <label class="sub">Where you want to be</label>
+          <div class="eyebrow">Where you want to be</div>
+          <label class="qtext" for="p5_amb">Of the new ideas your organization generates, what share should reach a funded, resourced initiative within 12 months?</label>
           <select id="p5_amb" class="pct"></select>
         </div>
         <div class="half">
-          <label class="sub">What share actually did, over the last 12 months?</label>
+          <div class="eyebrow">Where you are today</div>
+          <label class="qtext" for="p5_prac">What share actually did, over the last 12 months?</label>
           <select id="p5_prac" class="pct"></select>
         </div>
       </div>
@@ -471,14 +493,15 @@
       <div class="titletext">People and capability</div>
     </div>
     <div class="body">
-      <label class="q">How many people should build stronger, structured innovation capability to execute on these targets?</label>
       <div class="pair">
         <div class="half">
-          <label class="sub">Where you want to be</label>
+          <div class="eyebrow">Where you want to be</div>
+          <label class="qtext" for="p6_amb">How many people should build stronger, structured innovation capability to execute on these targets?</label>
           <select id="p6_amb" class="cnt"></select>
         </div>
         <div class="half">
-          <label class="sub">How many currently have that structured capability today?</label>
+          <div class="eyebrow">Where you are today</div>
+          <label class="qtext" for="p6_prac">How many currently have that structured capability today?</label>
           <select id="p6_prac" class="cnt"></select>
         </div>
       </div>
