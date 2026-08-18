@@ -272,9 +272,14 @@ function adminCreatePartnerView(code) {
   var sheet = view.getActiveSheet();
   sheet.setName('Their submissions');
 
+  /* IFNA, not IFERROR. An empty result is #N/A and gets the friendly
+     message. A missing IMPORTRANGE approval is #REF! and must stay
+     visible, otherwise a sheet that needs connecting looks identical to
+     one that simply has no responses yet. */
   sheet.getRange('A1').setFormula(
-    '=QUERY(IMPORTRANGE("' + source.getUrl() + '", "' + SHEET_NAME + '!A:V"), ' +
-    '"select * where Col2 = \'' + clean + '\'", 1)'
+    '=IFNA(QUERY(IMPORTRANGE("' + source.getUrl() + '", "' + SHEET_NAME + '!A:V"), ' +
+    '"select * where Col2 = \'' + clean + '\'", 1), ' +
+    '"No responses yet. This sheet fills in on its own as clients complete the diagnostic.")'
   );
   sheet.setFrozenRows(1);
 
