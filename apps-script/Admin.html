@@ -125,6 +125,8 @@
     border:1px solid var(--grey-300);
   }
   button.small:hover{ background:#eef2f4; }
+  button.small.danger{ color:var(--magenta); }
+  button.small.danger:hover{ background:#f6eaf1; }
 
   .preview{
     margin-top:12px;
@@ -243,6 +245,7 @@
             <th class="num">Avg growth gap</th>
             <th>Most common exposure</th>
             <th>Their sheet</th>
+            <th></th>
           </tr>
         </thead>
         <tbody id="partnerBody"></tbody>
@@ -274,6 +277,7 @@
             <th class="num">Growth gap</th>
             <th class="num">Capability gap</th>
             <th>Biggest exposure</th>
+            <th></th>
           </tr>
         </thead>
         <tbody id="subBody"></tbody>
@@ -420,7 +424,8 @@
         '<td class="num">' + p.count + '</td>' +
         '<td class="num">' + (typeof p.avgGrowthGap !== 'number' ? '<span class="muted">n/a</span>' : '$' + p.avgGrowthGap + 'M') + '</td>' +
         '<td>' + (p.topExposure ? esc(p.topExposure) : '<span class="muted">n/a</span>') + '</td>' +
-        '<td>' + sheetCell + '</td>';
+        '<td>' + sheetCell + '</td>' +
+        '<td>' + (p.unregistered ? '' : '<button class="small danger" data-remove="' + esc(p.code) + '" data-name="' + esc(p.name || p.code) + '">Remove</button>') + '</td>';
 
       body.appendChild(tr);
     });
@@ -431,6 +436,20 @@
     });
     body.querySelectorAll('[data-view]').forEach(function(b){
       b.addEventListener('click', function(){ makeView(this.getAttribute('data-view'), this); });
+    });
+    body.querySelectorAll('[data-remove]').forEach(function(b){
+      b.addEventListener('click', function(){
+        var code = this.getAttribute('data-remove');
+        var name = this.getAttribute('data-name');
+        if (!confirm('Stop listing ' + name + '?\n\nTheir link keeps working and their submissions are kept. They will show up as unregistered if any exist.')) return;
+        hideNotice();
+        this.disabled = true;
+        this.textContent = 'Removing...';
+        google.script.run
+          .withSuccessHandler(function(data){ render(data); say(name + ' removed from the list.'); })
+          .withFailureHandler(function(err){ say(err.message || String(err), true); })
+          .adminRemovePartner(code);
+      });
     });
 
     /* Filter */
@@ -473,11 +492,27 @@
         '<td>' + esc(s.revenue) + '</td>' +
         '<td class="num">' + (typeof s.growthGap !== 'number' ? '' : '$' + s.growthGap + 'M') + '</td>' +
         '<td class="num">' + (typeof s.capabilityGap !== 'number' ? '' : s.capabilityGap) + '</td>' +
-        '<td>' + esc(s.biggest) + '</td>';
+        '<td>' + esc(s.biggest) + '</td>' +
+        '<td><button class="small danger" data-del="' + s.row + '" data-company="' + esc(s.company) + '">Delete</button></td>';
       body.appendChild(tr);
     });
 
     el('subEmpty').style.display = rows.length ? 'none' : 'block';
+
+    body.querySelectorAll('[data-del]').forEach(function(b){
+      b.addEventListener('click', function(){
+        var row = this.getAttribute('data-del');
+        var company = this.getAttribute('data-company');
+        if (!confirm('Delete the submission from ' + company + '?\n\nThis removes the row from the sheet and cannot be undone.')) return;
+        hideNotice();
+        this.disabled = true;
+        this.textContent = 'Deleting...';
+        google.script.run
+          .withSuccessHandler(function(data){ render(data); say('Submission deleted.'); })
+          .withFailureHandler(function(err){ say(err.message || String(err), true); })
+          .adminDeleteSubmission(row, company);
+      });
+    });
   }
 
   el('filterPartner').addEventListener('change', renderSubmissions);

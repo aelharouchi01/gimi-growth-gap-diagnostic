@@ -283,6 +283,56 @@ function adminCreatePartnerView(code) {
   return { url: view.getUrl(), code: clean, name: name };
 }
 
+/**
+ * Stop listing a partner. Their submissions are left alone, because those are
+ * the record of what clients actually answered. A partner with submissions
+ * will reappear in the list as unregistered, which is accurate rather than a
+ * bug: the responses exist and have to be attributed to something.
+ */
+function adminRemovePartner(code) {
+  requireAdmin_();
+
+  var clean = String(code || '').trim();
+  if (!clean) throw new Error('No partner code given.');
+
+  var sheet = getPartnersSheet_();
+  var last = sheet.getLastRow();
+
+  if (last >= 2) {
+    var codes = sheet.getRange(2, 1, last - 1, 1).getValues();
+    for (var i = codes.length - 1; i >= 0; i--) {
+      if (String(codes[i][0]).trim() === clean) {
+        sheet.deleteRow(i + 2);
+      }
+    }
+  }
+
+  return adminData();
+}
+
+/**
+ * Delete one submission. Checks the company still matches before deleting, so
+ * a page that went stale cannot remove the wrong row.
+ */
+function adminDeleteSubmission(row, expectedCompany) {
+  requireAdmin_();
+
+  var r = parseInt(row, 10);
+  var sheet = getSheet_();
+
+  if (!r || r < 2 || r > sheet.getLastRow()) {
+    throw new Error('That row is no longer there. Reload the page.');
+  }
+
+  var actual = String(sheet.getRange(r, COL_COMPANY).getValue() || '');
+  if (actual !== String(expectedCompany || '')) {
+    throw new Error('The sheet has changed since this page loaded. Reload and try again.');
+  }
+
+  sheet.deleteRow(r);
+  return adminData();
+}
+
 /* ==========================================================================
  * Sheet access
  * ======================================================================= */
@@ -335,8 +385,9 @@ function readSubmissions_() {
   var rows = sheet.getRange(2, 1, last - 1, HEADERS.length).getValues();
   var out = [];
 
-  rows.forEach(function (r) {
+  rows.forEach(function (r, i) {
     out.push({
+      row: i + 2,
       received: formatDate_(r[COL_RECEIVED - 1]),
       code: String(r[COL_CODE - 1] || 'unattributed').trim(),
       company: String(r[COL_COMPANY - 1] || ''),
