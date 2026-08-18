@@ -117,12 +117,17 @@ deployment you get a brand new URL and have to update `index.html` again.
 
 ## What this does and does not protect
 
-The web app URL is visible in the page source, because it has to be for the browser to post
-to it. That is acceptable here because the script is append only. There is no code path in
-it that returns stored data, so the URL cannot be used to read anybody's submissions. A
-determined person could post a junk row. They cannot pull the sheet.
+The collector URL is visible in the diagnostic's page source, because it has to be for the
+browser to post to it. That is acceptable because on that deployment the only thing an
+anonymous caller can do is add a row. The script does read data now, for the console, but
+every read path goes through a check on who is signed in, and an anonymous visitor never
+passes it. A determined person could post a junk row into the sheet. They cannot pull
+anything out of it.
 
-If that ever stops being good enough, the answer is a real backend with authentication, not
+The console URL is a different deployment, restricted to the organisation, so Google refuses
+outsiders before the script even runs. Knowing that URL is not enough to open it.
+
+If that ever stops being good enough, the answer is a real backend with proper accounts, not
 a secret hidden in client-side JavaScript, because there is no such thing.
 
 ## Before you switch this on
