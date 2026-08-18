@@ -558,13 +558,64 @@
 
   </div>
 
-  <div class="footnote">
-    All results above are calculated instantly in your browser from the answers you selected, using a fixed set of formulas. No answers are sent anywhere, no AI model is used to generate any part of this report, and nothing is stored once you close this page.
-  </div>
+  <div class="footnote" id="footnote"></div>
 
 </div>
 
 <script>
+  /* ------------------------------------------------------------------
+     Where completed diagnostics are sent.
+
+     Empty string means nothing is sent anywhere and nothing is stored, and
+     the footnote at the bottom of the report says exactly that. Paste the
+     Apps Script web app URL between the quotes to switch collection on, and
+     the footnote automatically changes to disclose it. See SETUP.md.
+     ------------------------------------------------------------------ */
+  const SUBMIT_ENDPOINT = "";
+
+  const FOOTNOTE_PRIVATE =
+    "Every figure above is calculated in your browser from the answers you selected, using a fixed set of formulas. No AI model is used to generate any part of this report. Your answers are not sent anywhere and nothing is stored once you close this page.";
+  const FOOTNOTE_SHARED =
+    "Every figure above is calculated in your browser from the answers you selected, using a fixed set of formulas. No AI model is used to generate any part of this report. A copy of your answers and the figures above is shared with the partner who sent you this diagnostic, and with the Global Innovation Management Institute, so that they can follow up with you. You are not asked for your name or your email address.";
+
+  document.getElementById('footnote').textContent =
+    SUBMIT_ENDPOINT ? FOOTNOTE_SHARED : FOOTNOTE_PRIVATE;
+
+  /* Which partner sent this link. Rides along in the URL as ?p=code so the
+     respondent has nothing extra to fill in and nothing to get wrong. */
+  function ctpCode(){
+    const raw = new URLSearchParams(window.location.search).get('p') || '';
+    const clean = raw.replace(/[^A-Za-z0-9_-]/g, '').slice(0, 40);
+    return clean || 'unattributed';
+  }
+
+  /* The chosen band as the respondent saw it, not the midpoint we score on,
+     so the sheet stays readable. */
+  function labelOf(id){
+    const el = document.getElementById(id);
+    if (!el || el.selectedIndex < 0) return '';
+    const text = el.options[el.selectedIndex].text;
+    return text === 'Select...' ? '' : text;
+  }
+
+  let lastSent = null;
+  function recordSubmission(payload){
+    if (!SUBMIT_ENDPOINT) return;
+    const body = JSON.stringify(payload);
+    if (body === lastSent) return;   /* a second click is not a second respondent */
+    lastSent = body;
+    try {
+      fetch(SUBMIT_ENDPOINT, {
+        method: 'POST',
+        mode: 'no-cors',
+        headers: {'Content-Type': 'text/plain;charset=utf-8'},
+        body: body
+      }).catch(function(){ /* the report must never depend on this succeeding */ });
+    } catch (err) {
+      /* same reason */
+    }
+  }
+
   const PCT_OPTIONS = [
     {label:"0 - 10%", mid:5},
     {label:"10 - 20%", mid:15},
@@ -694,6 +745,25 @@
 
     document.getElementById('results').style.display = 'block';
     document.getElementById('results').scrollIntoView({behavior:'smooth'});
+
+    recordSubmission({
+      ctp: ctpCode(),
+      company: document.getElementById('companyName').value.trim(),
+      seniority: seniority,
+      industry: industry,
+      revenueBand: labelOf('revenue'),
+      answers: {
+        p1: [labelOf('p1_amb'), labelOf('p1_prac')],
+        p2: [labelOf('p2_amb'), labelOf('p2_prac')],
+        p3: [labelOf('p3_amb'), labelOf('p3_prac')],
+        p4: [labelOf('p4_amb'), labelOf('p4_prac')],
+        p5: [labelOf('p5_amb'), labelOf('p5_prac')],
+        p6: [labelOf('p6_amb'), labelOf('p6_prac')]
+      },
+      growthGapM: growthGapM,
+      capabilityGap: capGap,
+      topExposures: ranked.slice(0,2)
+    });
   }
 
   document.addEventListener('change', function(e){

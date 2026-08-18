@@ -17,11 +17,25 @@ Insights, Fields-of-Play, Business Concepts, Business Case, structured capabilit
 
 ## How it works
 
-One self-contained HTML file. No build step, no server, no dependencies, no network
-requests of any kind. Every result comes from fixed arithmetic on the respondent's own
-dropdown selections. Nothing is sent anywhere and nothing is stored.
+One self-contained HTML file. No build step, no server, no dependencies, no third-party
+scripts. Every result comes from fixed arithmetic on the respondent's own dropdown
+selections. No AI is involved at any point.
 
 To run it locally, open `index.html` in any browser.
+
+## Seeing the responses
+
+Collection is off in the shipped file, and while it is off the tool sends nothing anywhere
+and the footnote tells the respondent exactly that.
+
+Switch it on and each completed diagnostic appends a row to a Google Sheet that GIMI owns,
+which is the admin view. Partners are identified by their own link, `?p=their-code`, and are
+given a filtered copy of the sheet rather than access to the original. The footnote flips to
+disclose the sharing automatically, so what the respondent is told always matches what the
+tool actually does.
+
+Full instructions, including the per-partner access pattern, are in
+[SETUP.md](SETUP.md).
 
 ## Files
 
@@ -29,11 +43,15 @@ To run it locally, open `index.html` in any browser.
 |------|---------|
 | `index.html` | The tool. Everything is in here, including the logo as a base64 data URI. |
 | `gimi-logo.png` | The source logo asset, transparent background, cropped to content. |
+| `apps-script/Code.gs` | The append-only collector that runs on the Google Sheet. |
+| `SETUP.md` | How to switch collection on, and who sees what. |
 | `HANDOFF.md` | Full spec: hard constraints, brand palette, question set, scoring engine, open items. |
 | `.nojekyll` | Tells GitHub Pages to serve the files as-is. |
 
 ## Before changing anything
 
-Read `HANDOFF.md`. It carries hard constraints that must not be violated: no AI and no
-network calls, no free text except the company name, no em dashes, exact GIMI brand colors
-only, and the capability question never says "certification" or "training".
+Read `HANDOFF.md`. It carries hard constraints that must not be violated: no AI anywhere, no
+free text except the company name, no em dashes, exact GIMI brand colors only, and the
+capability question never says "certification" or "training". Exactly one network request is
+permitted, the submission POST described above, and the footnote must keep deriving itself
+from whether that is switched on.

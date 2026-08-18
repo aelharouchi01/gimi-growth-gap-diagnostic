@@ -1,4 +1,4 @@
-# GIMI Growth Gap Diagnostic — handoff spec for Claude Code
+# GIMI Growth Gap Diagnostic - handoff spec for Claude Code
 
 ## What this is
 
@@ -16,9 +16,18 @@ file, no build step, no server, no dependencies. Open it in any browser and it r
 ## Hard constraints (do not violate these)
 
 - **No AI anywhere.** Every result the tool produces must come from fixed arithmetic on the
-  respondent's own dropdown selections. No LLM calls, no external API calls of any kind, no
-  network requests at all. This is a deliberate cost and trust decision, not a placeholder to
-  later upgrade to AI.
+  respondent's own dropdown selections. No LLM calls, no external API calls of any kind. This
+  is a deliberate cost and trust decision, not a placeholder to later upgrade to AI. This part
+  is still absolute.
+- **One network request is now allowed, and only one.** The original spec said no network
+  requests at all. Ahmed lifted that on 2026-08-18 so that GIMI and the sending partner can see
+  completed diagnostics, which is the whole point of the tool as a CTP sales instrument. The
+  single permitted request is a fire and forget POST of the finished submission to a Google
+  Apps Script endpoint. It must never block or alter the report, nothing may be fetched back,
+  and no third-party script may be added. See `SETUP.md`.
+- **The footnote must always match the actual behaviour.** It is set at runtime from whether
+  `SUBMIT_ENDPOINT` is filled in, so that the tool can never promise a respondent that nothing
+  is sent while it is sending. Do not turn it back into static text.
 - **No free-text input** except the company name field. Every other input is a dropdown/select
   with fixed options, specifically so nothing can be mistyped.
 - **No em dashes anywhere in any copy.**
@@ -56,13 +65,13 @@ in those colors need **white** text. Pink, orange, yellow, and green are light e
 ## Functional spec
 
 ### Setup fields (top of form)
-- Company name — free text, only free-text field allowed.
-- Seniority — dropdown: C-Suite, VP, Director, Senior Manager.
-- Industry — dropdown: Manufacturing & Industrial, Financial Services, Retail & Consumer Goods,
+- Company name - free text, only free-text field allowed.
+- Seniority - dropdown: C-Suite, VP, Director, Senior Manager.
+- Industry - dropdown: Manufacturing & Industrial, Financial Services, Retail & Consumer Goods,
   Healthcare & Life Sciences, Technology & Telecom, Energy & Utilities, Public Sector & Government,
-  Professional Services, Other. (Currently informational only, not yet wired into scoring — see
+  Professional Services, Other. (Currently informational only, not yet wired into scoring - see
   Open items.)
-- Annual revenue — dropdown band: Under $10M, $10-50M, $50-150M, $150-250M, $250M-1B, Over $1B.
+- Annual revenue - dropdown band: Under $10M, $10-50M, $50-150M, $150-250M, $250M-1B, Over $1B.
 
 ### The six question pairs
 
@@ -144,10 +153,11 @@ verified against WCAG contrast ratios, no em dashes, JS syntax-checked with `nod
 
 - Industry is captured but not yet used to vary question wording or scoring. Could branch copy by
   industry later.
-- No persistence layer. Every submission is calculated in-browser and lost on refresh. If GIMI
-  wants to aggregate responses across CTP clients for real peer benchmarking (instead of the current
-  static Innovation Premium stakes line), that requires a backend and a privacy/consent decision,
-  a meaningfully bigger scope than this file.
+- ~~No persistence layer.~~ Done on 2026-08-18. Completed diagnostics post to a Google Sheet
+  via Apps Script, attributed to a partner through a `?p=code` link. GIMI reads the sheet, each
+  partner gets a filtered copy. See `SETUP.md`. Real peer benchmarking, meaning replacing the
+  static Innovation Premium stakes line with figures drawn from actual responses, is still not
+  built and needs enough submissions to be meaningful first.
 - No PDF/export option yet, results only render on-screen.
 - No multi-respondent alignment comparison yet (sending to 2-3 execs at the same client and diffing
   their answers on the Fields-of-Play pair), which was discussed as a strong future feature for CTP
@@ -158,9 +168,14 @@ verified against WCAG contrast ratios, no em dashes, JS syntax-checked with `nod
 
 ## File inventory in this handoff
 
-- `gimi-growth-gap-diagnostic.html` — the working tool, open directly in a browser.
-- `gimi-logo.png` — the real GIMI logo, transparent background, cropped to content.
-- `HANDOFF.md` — this file.
+- `index.html` - the working tool, open directly in a browser. This was
+  `gimi-growth-gap-diagnostic.html` in the original handoff, renamed so that the GitHub Pages
+  URL resolves without a filename.
+- `gimi-logo.png` - the real GIMI logo, transparent background, cropped to content.
+- `apps-script/Code.gs` - the submission collector that runs on the Google Sheet.
+- `SETUP.md` - how to switch collection on, and who sees what.
+- `README.md` - orientation for anyone opening the repo.
+- `HANDOFF.md` - this file.
 
 ## Suggested opening prompt for the new Claude Code session
 
