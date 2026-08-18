@@ -1,0 +1,495 @@
+<!DOCTYPE html>
+<html>
+<head>
+<base target="_top">
+<style>
+  :root{
+    --navy:#1c3140;
+    --teal:#00858E;
+    --teal-deep:#355E71;
+    --teal-dark:#00646b;
+    --magenta:#A43C7C;
+    --pink:#C96A82;
+    --orange:#DE8E3D;
+    --yellow:#EFCE46;
+    --green:#B3CE52;
+    --grey-600:#5b6673;
+    --grey-300:#d8dde3;
+    --grey-50:#f4f6f8;
+  }
+  *{box-sizing:border-box;}
+  body{
+    font-family: Calibri, "Carlito", Arial, sans-serif;
+    background:var(--grey-50);
+    margin:0;
+    color:#222;
+    font-size:14px;
+  }
+  header{
+    background:#fff;
+    padding:16px 28px;
+    border-bottom:6px solid;
+    border-image: linear-gradient(to right, #B3CE52, #EFCE46, #DE8E3D, #C96A82, #A43C7C, #00858E) 1;
+  }
+  header .wordmark{
+    font-size:19px;
+    font-weight:700;
+    color:var(--navy);
+  }
+  header .sub{
+    font-size:12.5px;
+    color:var(--grey-600);
+    margin-top:2px;
+  }
+  .wrap{ max-width:1180px; margin:0 auto; padding:22px 20px 60px; }
+
+  .stats{ display:flex; gap:14px; flex-wrap:wrap; margin-bottom:20px; }
+  .stat{
+    background:#fff;
+    border:1px solid var(--grey-300);
+    border-left:8px solid var(--teal);
+    border-radius:3px;
+    padding:12px 18px;
+    min-width:170px;
+  }
+  .stat .label{
+    font-size:10.5px;
+    font-weight:700;
+    letter-spacing:.08em;
+    text-transform:uppercase;
+    color:var(--grey-600);
+  }
+  .stat .num{ font-size:26px; font-weight:700; color:var(--navy); margin-top:2px; }
+  .stat.b{ border-left-color:var(--magenta); }
+  .stat.c{ border-left-color:var(--orange); }
+
+  .card{
+    background:#fff;
+    border:1px solid var(--grey-300);
+    border-radius:3px;
+    margin-bottom:20px;
+    overflow:hidden;
+  }
+  .card > h2{
+    margin:0;
+    font-size:13.5px;
+    font-weight:700;
+    color:var(--navy);
+    padding:12px 18px;
+    background:#eef2f4;
+    border-bottom:1px solid var(--grey-300);
+  }
+  .card .body{ padding:16px 18px; }
+
+  .builder{ display:flex; gap:10px; flex-wrap:wrap; align-items:flex-end; }
+  .builder .field{ flex:1; min-width:240px; }
+  label.f{
+    display:block;
+    font-size:10.5px;
+    font-weight:700;
+    letter-spacing:.08em;
+    text-transform:uppercase;
+    color:var(--grey-600);
+    margin-bottom:6px;
+  }
+  input[type=text], select{
+    width:100%;
+    font-family:inherit;
+    font-size:14px;
+    padding:8px 9px;
+    border:1px solid var(--grey-300);
+    background:#fff;
+    color:#222;
+    border-radius:3px;
+  }
+  button{
+    font-family:inherit;
+    font-size:13.5px;
+    font-weight:700;
+    padding:9px 16px;
+    border:none;
+    border-radius:3px;
+    background:var(--teal);
+    color:#fff;
+    cursor:pointer;
+    white-space:nowrap;
+  }
+  button:hover{ background:var(--teal-dark); }
+  button:disabled{ background:var(--grey-300); color:var(--grey-600); cursor:default; }
+  button.small{
+    font-size:12px;
+    font-weight:600;
+    padding:5px 10px;
+    background:#fff;
+    color:var(--teal-deep);
+    border:1px solid var(--grey-300);
+  }
+  button.small:hover{ background:#eef2f4; }
+
+  .preview{
+    margin-top:12px;
+    font-size:13px;
+    color:var(--grey-600);
+  }
+  .preview code{
+    font-family:Consolas, monospace;
+    background:var(--grey-50);
+    border:1px solid var(--grey-300);
+    border-radius:3px;
+    padding:2px 6px;
+    color:var(--navy);
+  }
+
+  .tablewrap{ overflow-x:auto; }
+  table{ border-collapse:collapse; width:100%; font-size:13px; }
+  th{
+    text-align:left;
+    font-size:10.5px;
+    font-weight:700;
+    letter-spacing:.06em;
+    text-transform:uppercase;
+    color:var(--grey-600);
+    padding:9px 12px;
+    border-bottom:1px solid var(--grey-300);
+    white-space:nowrap;
+  }
+  td{
+    padding:9px 12px;
+    border-bottom:1px solid #edf0f3;
+    vertical-align:middle;
+  }
+  tr:last-child td{ border-bottom:none; }
+  td.num{ text-align:right; font-variant-numeric:tabular-nums; }
+  .code{
+    font-family:Consolas, monospace;
+    font-size:12px;
+    background:var(--grey-50);
+    border:1px solid var(--grey-300);
+    border-radius:3px;
+    padding:1px 6px;
+    color:var(--navy);
+  }
+  .muted{ color:var(--grey-600); }
+  .pill{
+    display:inline-block;
+    font-size:11px;
+    font-weight:700;
+    padding:2px 8px;
+    border-radius:10px;
+    background:#f2e7ef;
+    color:var(--magenta);
+  }
+  .actions{ display:flex; gap:6px; flex-wrap:wrap; }
+
+  .notice{
+    display:none;
+    margin-bottom:16px;
+    padding:10px 14px;
+    border-radius:3px;
+    font-size:13px;
+    border-left:4px solid var(--teal);
+    background:#e4f2f3;
+    color:var(--navy);
+  }
+  .notice.bad{ border-left-color:var(--magenta); background:#f6eaf1; }
+
+  .empty{ padding:26px 18px; text-align:center; color:var(--grey-600); font-size:13px; }
+  .footnote{ font-size:11.5px; color:var(--grey-600); line-height:1.55; margin-top:22px; }
+  .filterbar{ display:flex; gap:10px; align-items:flex-end; flex-wrap:wrap; margin-bottom:14px; }
+  .filterbar .field{ min-width:230px; }
+  a{ color:var(--teal-dark); }
+</style>
+</head>
+<body>
+
+<header>
+  <div class="wordmark">Growth Gap Diagnostic, admin</div>
+  <div class="sub" id="whoami">Loading...</div>
+</header>
+
+<div class="wrap">
+
+  <div class="notice" id="notice"></div>
+
+  <div class="stats">
+    <div class="stat"><div class="label">Submissions</div><div class="num" id="statSubs">0</div></div>
+    <div class="stat b"><div class="label">Partners</div><div class="num" id="statPartners">0</div></div>
+    <div class="stat c"><div class="label">Average growth gap</div><div class="num" id="statGap">0</div></div>
+  </div>
+
+  <div class="card">
+    <h2>Create a partner link</h2>
+    <div class="body">
+      <div class="builder">
+        <div class="field">
+          <label class="f" for="partnerName">Partner name</label>
+          <input type="text" id="partnerName" placeholder="Acme Consulting" autocomplete="off">
+        </div>
+        <button id="addBtn">Create the link</button>
+      </div>
+      <div class="preview" id="preview"></div>
+    </div>
+  </div>
+
+  <div class="card">
+    <h2>Partners</h2>
+    <div class="tablewrap">
+      <table id="partnerTable">
+        <thead>
+          <tr>
+            <th>Partner</th>
+            <th>Their link</th>
+            <th class="num">Completed</th>
+            <th class="num">Avg growth gap</th>
+            <th>Most common exposure</th>
+            <th>Their sheet</th>
+          </tr>
+        </thead>
+        <tbody id="partnerBody"></tbody>
+      </table>
+      <div class="empty" id="partnerEmpty">No partners yet. Create a link above.</div>
+    </div>
+  </div>
+
+  <div class="card">
+    <h2>Submissions</h2>
+    <div class="body">
+      <div class="filterbar">
+        <div class="field">
+          <label class="f" for="filterPartner">Show</label>
+          <select id="filterPartner"><option value="">Every partner</option></select>
+        </div>
+      </div>
+    </div>
+    <div class="tablewrap">
+      <table id="subTable">
+        <thead>
+          <tr>
+            <th>Received</th>
+            <th>Partner</th>
+            <th>Company</th>
+            <th>Level</th>
+            <th>Industry</th>
+            <th>Revenue</th>
+            <th class="num">Growth gap</th>
+            <th class="num">Capability gap</th>
+            <th>Biggest exposure</th>
+          </tr>
+        </thead>
+        <tbody id="subBody"></tbody>
+      </table>
+      <div class="empty" id="subEmpty">Nothing has been completed yet.</div>
+    </div>
+  </div>
+
+  <div class="footnote" id="footnote"></div>
+
+</div>
+
+<script>
+  var DATA = null;
+
+  function el(id){ return document.getElementById(id); }
+
+  function say(message, bad){
+    var n = el('notice');
+    n.textContent = message;
+    n.className = bad ? 'notice bad' : 'notice';
+    n.style.display = 'block';
+  }
+
+  function hideNotice(){ el('notice').style.display = 'none'; }
+
+  function esc(s){
+    return String(s === null || s === undefined ? '' : s)
+      .replace(/&/g, '&amp;').replace(/</g, '&lt;').replace(/>/g, '&gt;')
+      .replace(/"/g, '&quot;');
+  }
+
+  function slug(s){
+    return String(s).toLowerCase()
+      .replace(/&/g, ' and ')
+      .replace(/[^a-z0-9]+/g, '-')
+      .replace(/^-+|-+$/g, '')
+      .slice(0, 40);
+  }
+
+  function copy(text, label){
+    var box = document.createElement('textarea');
+    box.value = text;
+    box.style.position = 'fixed';
+    box.style.opacity = '0';
+    document.body.appendChild(box);
+    box.select();
+    try { document.execCommand('copy'); say((label || 'Link') + ' copied.'); }
+    catch (err) { say('Could not copy. Select it by hand: ' + text, true); }
+    document.body.removeChild(box);
+  }
+
+  el('partnerName').addEventListener('input', function(){
+    var name = this.value.trim();
+    var p = el('preview');
+    if (!name){ p.innerHTML = ''; return; }
+    var code = slug(name);
+    if (!code){ p.innerHTML = '<span class="muted">That name has nothing to build a code from.</span>'; return; }
+    p.innerHTML = 'Their link will be <code>' + esc(DATA.diagnosticUrl + '?p=' + code) + '</code>';
+  });
+
+  el('partnerName').addEventListener('keydown', function(e){
+    if (e.key === 'Enter') el('addBtn').click();
+  });
+
+  el('addBtn').addEventListener('click', function(){
+    var name = el('partnerName').value.trim();
+    if (!name){ say('Type the partner name first.', true); return; }
+    hideNotice();
+    this.disabled = true;
+    this.textContent = 'Creating...';
+    google.script.run
+      .withSuccessHandler(function(data){
+        el('addBtn').disabled = false;
+        el('addBtn').textContent = 'Create the link';
+        el('partnerName').value = '';
+        el('preview').innerHTML = '';
+        render(data);
+        copy(data.diagnosticUrl + '?p=' + slug(name), 'Link for ' + name);
+      })
+      .withFailureHandler(function(err){
+        el('addBtn').disabled = false;
+        el('addBtn').textContent = 'Create the link';
+        say(err.message || String(err), true);
+      })
+      .adminAddPartner(name);
+  });
+
+  function makeView(code, btn){
+    hideNotice();
+    btn.disabled = true;
+    btn.textContent = 'Building...';
+    google.script.run
+      .withSuccessHandler(function(result){
+        say('Sheet created for ' + result.name + '. Open it once and approve the IMPORTRANGE prompt, then share that file and nothing else with them.');
+        google.script.run.withSuccessHandler(render).adminData();
+        window.open(result.url, '_blank');
+      })
+      .withFailureHandler(function(err){
+        btn.disabled = false;
+        btn.textContent = 'Create';
+        say(err.message || String(err), true);
+      })
+      .adminCreatePartnerView(code);
+  }
+
+  function render(data){
+    DATA = data;
+
+    el('whoami').textContent =
+      'Signed in as ' + data.email + '. This page is not public, the diagnostic itself is.';
+
+    var gaps = data.submissions
+      .map(function(s){ return s.growthGap; })
+      .filter(function(v){ return typeof v === 'number'; });
+    var avg = gaps.length
+      ? Math.round(gaps.reduce(function(a,b){ return a+b; }, 0) / gaps.length)
+      : 0;
+
+    el('statSubs').textContent = data.totals.submissions;
+    el('statPartners').textContent = data.totals.partners;
+    el('statGap').textContent = '$' + avg + 'M';
+
+    /* Partners */
+    var body = el('partnerBody');
+    body.innerHTML = '';
+    data.partners.forEach(function(p){
+      var tr = document.createElement('tr');
+
+      var who = esc(p.name || p.code) +
+        (p.unregistered ? ' <span class="pill">not registered</span>' : '') +
+        '<br><span class="code">' + esc(p.code) + '</span>';
+
+      var sheetCell = p.viewUrl
+        ? '<a href="' + esc(p.viewUrl) + '" target="_blank">Open</a>'
+        : '<button class="small" data-view="' + esc(p.code) + '">Create</button>';
+
+      tr.innerHTML =
+        '<td>' + who + '</td>' +
+        '<td class="actions">' +
+          '<button class="small" data-copy="' + esc(p.link) + '">Copy link</button>' +
+          '<a class="muted" href="' + esc(p.link) + '" target="_blank">Preview</a>' +
+        '</td>' +
+        '<td class="num">' + p.count + '</td>' +
+        '<td class="num">' + (typeof p.avgGrowthGap !== 'number' ? '<span class="muted">n/a</span>' : '$' + p.avgGrowthGap + 'M') + '</td>' +
+        '<td>' + (p.topExposure ? esc(p.topExposure) : '<span class="muted">n/a</span>') + '</td>' +
+        '<td>' + sheetCell + '</td>';
+
+      body.appendChild(tr);
+    });
+    el('partnerEmpty').style.display = data.partners.length ? 'none' : 'block';
+
+    body.querySelectorAll('[data-copy]').forEach(function(b){
+      b.addEventListener('click', function(){ copy(this.getAttribute('data-copy')); });
+    });
+    body.querySelectorAll('[data-view]').forEach(function(b){
+      b.addEventListener('click', function(){ makeView(this.getAttribute('data-view'), this); });
+    });
+
+    /* Filter */
+    var filter = el('filterPartner');
+    var current = filter.value;
+    filter.innerHTML = '<option value="">Every partner</option>';
+    data.partners.forEach(function(p){
+      var o = document.createElement('option');
+      o.value = p.code;
+      o.textContent = (p.name || p.code) + ' (' + p.count + ')';
+      filter.appendChild(o);
+    });
+    filter.value = current;
+
+    renderSubmissions();
+
+    el('footnote').textContent =
+      'Read straight from the sheet, which stays the source of truth. Partners are never given ' +
+      'access to it, because it holds the clients of every other partner and Google cannot ' +
+      'restrict a collaborator to a subset of rows. Use the Create button to build them their ' +
+      'own filtered ' +
+      'copy instead. The diagnostic itself asks for no name and no email address.';
+  }
+
+  function renderSubmissions(){
+    var code = el('filterPartner').value;
+    var rows = DATA.submissions.filter(function(s){ return !code || s.code === code; });
+    var body = el('subBody');
+    body.innerHTML = '';
+
+    rows.forEach(function(s){
+      var partner = DATA.partners.filter(function(p){ return p.code === s.code; })[0];
+      var tr = document.createElement('tr');
+      tr.innerHTML =
+        '<td class="muted">' + esc(s.received) + '</td>' +
+        '<td>' + esc(partner && partner.name ? partner.name : s.code) + '</td>' +
+        '<td>' + esc(s.company || 'not given') + '</td>' +
+        '<td>' + esc(s.seniority) + '</td>' +
+        '<td>' + esc(s.industry) + '</td>' +
+        '<td>' + esc(s.revenue) + '</td>' +
+        '<td class="num">' + (typeof s.growthGap !== 'number' ? '' : '$' + s.growthGap + 'M') + '</td>' +
+        '<td class="num">' + (typeof s.capabilityGap !== 'number' ? '' : s.capabilityGap) + '</td>' +
+        '<td>' + esc(s.biggest) + '</td>';
+      body.appendChild(tr);
+    });
+
+    el('subEmpty').style.display = rows.length ? 'none' : 'block';
+  }
+
+  el('filterPartner').addEventListener('change', renderSubmissions);
+
+  google.script.run
+    .withSuccessHandler(render)
+    .withFailureHandler(function(err){
+      document.querySelector('.wrap').innerHTML =
+        '<div class="notice bad" style="display:block">' + esc(err.message || String(err)) + '</div>';
+    })
+    .adminData();
+</script>
+
+</body>
+</html>

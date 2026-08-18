@@ -37,7 +37,14 @@ spreadsheet filtered to their code, which is the thing you share.
 
 The diagnostic is anonymous. It asks for no name and no email address.
 
-Full instructions are in [SETUP.md](SETUP.md).
+## Running it
+
+There is one admin page, restricted to the organisation by Google sign-in, which builds
+partner links, shows every submission, summarises each partner's results and creates the
+per-partner sheets. It is a second deployment of the same Apps Script, so no password lives
+in any file here.
+
+Full instructions, including the admin URL, are in [SETUP.md](SETUP.md).
 
 ## Files
 

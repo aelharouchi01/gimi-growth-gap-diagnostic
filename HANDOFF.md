@@ -34,6 +34,11 @@ file, no build step, no server, no dependencies. Open it in any browser and it r
   is GIMI's alone. It holds every partner's clients, and Google cannot restrict a
   collaborator to a subset of rows, so it is never shared. The Apps Script builds each
   partner a separate filtered spreadsheet instead.
+- **Admin lives in the Apps Script, not on GitHub Pages.** The github.io URL is public static
+  hosting and always will be, so it can never hold a dashboard or a login. The admin console
+  is a second, organisation-restricted deployment of the same script project, which is what
+  makes Google sign-in the lock and keeps every secret out of the repo. Do not move admin
+  functionality onto the public page.
 - **No free-text input** except the company name field. Every other input is a dropdown/select
   with fixed options, specifically so nothing can be mistyped.
 - **No em dashes anywhere in any copy.**

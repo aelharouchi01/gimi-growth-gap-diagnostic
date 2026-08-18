@@ -62,7 +62,31 @@ code is recorded as `unattributed`.
 Keep the codes lowercase, no spaces. Anything outside letters, numbers, hyphen and
 underscore is stripped out before it is sent.
 
-## 6. Who sees what
+## 6. The admin console
+
+Everything below can be done from one page, which is the thing to bookmark:
+
+**https://script.google.com/a/macros/ixl-center.net/s/AKfycbzYlTeV6mOs0c0scajC30HIfmdrhsAeV4V0xsL3EItQ_gt9LVDI8oGgAlORi9YcUBhy0w/exec**
+
+It is a second deployment of the same script, restricted to the organisation, so Google
+sign-in is the lock and there is no password in any file. Opening it while signed out, or
+from an outside account, gets you nothing. It lets you:
+
+- Type a partner name and get their link, copied to the clipboard, in one click. The code is
+  derived from the name, so "Acme Consulting" becomes `?p=acme-consulting`.
+- See every submission in a readable table, filtered by partner.
+- See per partner: how many clients completed it, their average growth gap, and the exposure
+  that comes up most. That last one is the evidence a prospective CTP actually wants.
+- Build a partner their filtered sheet with the Create button.
+
+Registered partners are kept on a `Partners` tab in the same spreadsheet, so a partner you
+have created a link for shows up even before anyone has completed the diagnostic.
+
+To redeploy after editing the code, use **Deploy, Manage deployments**, pick **admin
+console**, pencil, **Version: New version**. The collector is a separate deployment in the
+same list and has its own version, so updating one does not update the other.
+
+## 7. Who sees what
 
 **GIMI** opens the collection sheet directly. That is the admin view, and it is the only
 place the full picture exists.
